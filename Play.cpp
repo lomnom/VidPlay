@@ -8,16 +8,29 @@
 #include <thread>
 #include <vector>
 #include <cmath>
+#include <unordered_map>
 #include "HexToXterm.hpp"
 #include "../nncurses/nncurses.hpp"
 
-using std::string,std::vector,std::out_of_range;
+using std::string,std::vector,std::out_of_range,std::unordered_map;
 using nc::gettermsize,nc::TimeLimiter,nc::Renderable,nc::Terminal,nc::Texture,nc::Style,nc::Screen;
 using nc::Text,nc::midOfst,nc::sleep,nc::TimeTracker;
 using std::cout,std::to_string,std::thread;
 using cv::Mat,cv::imread,cv::imshow,cv::waitKey,cv::Size,cv::resize,cv::Vec3b,nc::blocks,cv::VideoCapture;
 namespace samples=cv::samples;
 namespace esc=nc::Esc;
+
+template<class T, size_t N> 
+struct std::hash<std::array<T, N>> {
+    auto operator() (const std::array<T, N>& key) const {
+        std::hash<T> hasher;
+        size_t result = 0;
+        for(size_t i = 0; i < N; ++i) {
+            result = result * 31 + hasher(key[i]); // ??
+        }
+        return result;
+    }
+};
 
 class Image{
 public:
@@ -43,6 +56,7 @@ public:
 
 		resize(image,resized,newSize);
 
+		unordered_map<array<uint8_t,3>,uint8_t> lookup;
 		for (int row=0;row<height;row++){
 			uchar* resizedBPtr = resized.ptr<uchar>(row);
 			uchar* resizedGPtr = resizedBPtr+1;
@@ -50,7 +64,13 @@ public:
 			uchar* xtermPtr = xtermImage.ptr<uchar>(row);
 			for (int col=0;col<width;col++){
 				int colIndex=col*3;
-				xtermPtr[col]=HexToXterm({resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]});
+				array<uint8_t,3> color={resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]};
+				try{
+					xtermPtr[col]=lookup.at(color);
+				}catch(out_of_range){
+					lookup[color]=HexToXterm(color);
+					xtermPtr[col]=lookup.at(color);
+				}
 			}
 		}
 		converted=true;
