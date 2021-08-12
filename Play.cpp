@@ -50,7 +50,7 @@ public:
 			uchar* xtermPtr = xtermImage.ptr<uchar>(row);
 			for (int col=0;col<width;col++){
 				int colIndex=col*3;
-				xtermPtr[col]=HexToXterm(RgbCol(resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]));
+				xtermPtr[col]=HexToXterm({resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]});
 			}
 		}
 		converted=true;
