@@ -69,9 +69,9 @@ namespace nc{
 			for (int col=0;col<width;col++){
 				int colIndex=col*3;
 				array<uint8_t,3> color={resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]};
-				try{
+				if (lookup.count(color)){
 					xtermPtr[col]=lookup.at(color);
-				}catch(out_of_range){
+				}else{
 					lookup[color]=HexToXterm(color);
 					xtermPtr[col]=lookup.at(color);
 				}

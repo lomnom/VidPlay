@@ -63,11 +63,11 @@ int main(int argc, char *argv[]){
 				Text(
 					"frame: "+to_string(video.frame())+
 					"\nfps: "+to_string(video.fps)+
-					"\nms: "+to_string(video.ms())+
-					"\nrender: "+to_string(renderTracker.time())+"ms"+
-					"\nproject: "+to_string(projTracker.time())+"ms"
-					"\noffset: "+to_string(video.offset)+
-					"\nallTime: "+to_string(video.allTime)
+					"\nCms: "+to_string(video.ms())+ //correct ms
+					"\nRms: "+to_string(video.allTime)+ //real ms
+					"\nrender: "+to_string(renderTracker.time())+"ms"+ //time taken for render
+					"\nproject: "+to_string(projTracker.time())+"ms" //time for project
+					"\noffset: "+to_string(video.offset) //error in correct and real
 					,Style(-1,-1,0)
 				)
 					.render(&terminal.screen);
