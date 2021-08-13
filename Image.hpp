@@ -72,8 +72,9 @@ namespace nc{
 				if (lookup.count(color)){
 					xtermPtr[col]=lookup.at(color);
 				}else{
-					lookup[color]=HexToXterm(color);
-					xtermPtr[col]=lookup.at(color);
+					uint8_t xtermC=HexToXterm(color);
+					lookup[color]=xtermC;
+					xtermPtr[col]=xtermC;
 				}
 			}
 		}
@@ -232,7 +233,7 @@ namespace nc{
 			return video.get(cv::CAP_PROP_POS_MSEC);
 		}
 
-		void frame(int id){
+		void frame(int id){ //AAAAAAAAA
 			video.set(cv::CAP_PROP_POS_FRAMES,id);
 		}
 

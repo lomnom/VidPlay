@@ -13,8 +13,17 @@ using nc::gettermsize,nc::TimeLimiter,nc::Renderable,nc::Terminal,nc::Texture,nc
 using nc::Text,nc::midOfst,nc::sleep,nc::TimeTracker,nc::Video;
 using std::cout,std::to_string,std::thread;
 using cv::Mat,cv::imread,cv::Size,cv::resize,cv::Vec3b,nc::blocks,cv::VideoCapture;
-namespace samples=cv::samples;
 namespace esc=nc::Esc;
+
+/*
+compiling:
+	mac:
+		brew install opencv
+		g++ -std=c++2a $(pkg-config --cflags --libs opencv4) -O3 Play.cpp 
+	raspberry pi/debian:
+		sudo apt-get install libopencv-dev
+		clang++ -std=c++2a -O3 $(pkg-config --cflags --libs opencv) -lpthread -pthread Play.cpp
+*/
 
 vector<char> keys;
 void keyListener(bool* end){
@@ -67,7 +76,7 @@ int main(int argc, char *argv[]){
 					"\nRms: "+to_string(video.allTime)+ //real ms
 					"\nrender: "+to_string(renderTracker.time())+"ms"+ //time taken for render
 					"\nproject: "+to_string(projTracker.time())+"ms" //time for project
-					"\noffset: "+to_string(video.offset) //error in correct and real
+					"\nerror: "+to_string(video.offset) //error in correct and real
 					,Style(-1,-1,0)
 				)
 					.render(&terminal.screen);
