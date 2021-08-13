@@ -55,12 +55,12 @@ namespace nc{
 		return result;
 	}
 
+	unordered_map<array<uint8_t,3>,uint8_t> lookup;
 	Mat HexToXterm(Mat rgbImg){ //(un)speed
 		int height=rgbImg.rows;
 		int width=rgbImg.cols;
 		Mat xtermImage=Mat(height,width,CV_8UC1,Scalar(0));
 
-		unordered_map<array<uint8_t,3>,uint8_t> lookup;
 		for (int row=0;row<height;row++){
 			uchar* resizedBPtr = rgbImg.ptr<uchar>(row);
 			uchar* resizedGPtr = resizedBPtr+1;

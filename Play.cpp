@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
 					"\nrender: "+to_string(renderTracker.time())+"ms"+
 					"\nproject: "+to_string(projTracker.time())+"ms"
 					"\noffset: "+to_string(video.offset)+
-					"\nallTime"+to_string(video.allTime)
+					"\nallTime: "+to_string(video.allTime)
 					,Style(-1,-1,0)
 				)
 					.render(&terminal.screen);
