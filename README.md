@@ -43,6 +43,6 @@ play /path/to/video.extension
 - Makes use of all 256 ansi colors to display images
 - Uses ascii block elements to fit more detail into smaller spaces.
 ## Videos
-[The player in action. ](https://cdn.discordapp.com/attachments/819056075998232635/875665379756748820/s1.mov)At the start, it starts out slightly desynchronised because of lag, but it accelerates to make up for it.
+[The player in action. ](https://cdn.discordapp.com/attachments/819056075998232635/875665379756748820/s1.mov)At the start, it starts out slightly desynchronised because of (rare) lag, but it accelerates to make up for it.
 ## TODO
 - Make lookuptable smaller
