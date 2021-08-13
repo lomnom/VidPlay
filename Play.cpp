@@ -1,7 +1,7 @@
 #include <thread>
 #include <vector>
 #include <unordered_map>
-#include "../nncurses/nncurses.hpp"
+#include "nncurses/nncurses.hpp"
 #include "Image.hpp"
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>

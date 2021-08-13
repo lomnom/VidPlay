@@ -1,8 +1,8 @@
 #ifndef ncImage
 #define ncImage
 
-#include "../nncurses/Screens.hpp"
-#include "../nncurses/Styles.hpp"
+#include "nncurses/Screens.hpp"
+#include "nncurses/Styles.hpp"
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core.hpp>
@@ -246,7 +246,7 @@ namespace nc{
 			allTime+=frameTracker.time();
 		}
 
-		void sync(){
+		void sync(){ //>0 is too fast, <0 is too slow
 			sleepTime=ms()-allTime;
 			sleepTime= sleepTime>0 ? sleepTime : 0;
 
