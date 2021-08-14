@@ -87,8 +87,8 @@ int main(int argc, char *argv[]){
 				Text(
 					"frame: "+to_string(video.frame())+
 					"\nfps: "+to_string(video.fps)+
-					"\nCms: "+to_string(video.ms())+ //correct ms
-					"\nRms: "+to_string(video.allTime)+ //real ms
+					"\nCms: "+to_string(video.ms()-video.frameTime)+"ms"+ //correct ms
+					"\nRms: "+to_string(video.allTime)+"ms"+ //real ms
 					"\nrender: "+to_string(renderTracker.time())+"ms"+ //time taken for render
 					"\nproject: "+to_string(projTracker.time())+"ms" //time for project
 					"\nerror: "+to_string(video.offset)+"ms" //error in correct and real
