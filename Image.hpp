@@ -113,7 +113,7 @@ namespace nc{
 			if ( height%2==1 ){
 				uchar* ptr = pixles.ptr<uchar>(height-1);
 				for (int col=0;col<width;col++){
-					screen->screen[startX+theight][col]=Texture(
+					screen->screen[startY+theight-1][startX+col]=Texture(
 						character,
 						Style(
 							ptr[col],
