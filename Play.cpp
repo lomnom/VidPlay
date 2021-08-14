@@ -8,9 +8,9 @@
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 
-using std::string,std::vector,std::out_of_range,std::unordered_map;
+using std::string,std::vector,std::out_of_range,std::unordered_map,std::stoi;
 using nc::gettermsize,nc::TimeLimiter,nc::Renderable,nc::Terminal,nc::Texture,nc::Style,nc::Screen;
-using nc::Text,nc::midOfst,nc::sleep,nc::TimeTracker,nc::Video;
+using nc::Text,nc::midOfst,nc::sleep,nc::TimeTracker,nc::Video,nc::HollowRectangle;
 using std::cout,std::to_string,std::thread;
 using cv::Mat,cv::imread,cv::Size,cv::resize,cv::Vec3b,nc::blocks,cv::VideoCapture;
 namespace esc=nc::Esc;
@@ -44,6 +44,21 @@ char cinchr(){
 	}
 }
 
+Texture vertLine("|",Style(252,256,0));
+Texture horizLine("-",Style(252,256,0));
+Texture corner("+",Style(252,256,0));
+
+HollowRectangle gtWin(
+	0,0, //x,y
+	4,24+2, //height,width
+	horizLine,
+	vertLine,
+	corner
+);
+
+Text gtText("enter the frame to go to",Style(252,256,0),0,0);
+Text inText("",Style(252,256,0),0,0);
+
 int main(int argc, char *argv[]){
 	vector<string> arguments(argv, argv + argc);
 	if (arguments.size()==1){
@@ -76,7 +91,7 @@ int main(int argc, char *argv[]){
 					"\nRms: "+to_string(video.allTime)+ //real ms
 					"\nrender: "+to_string(renderTracker.time())+"ms"+ //time taken for render
 					"\nproject: "+to_string(projTracker.time())+"ms" //time for project
-					"\nerror: "+to_string(video.offset) //error in correct and real
+					"\nerror: "+to_string(video.offset)+"ms" //error in correct and real
 					,Style(-1,-1,0)
 				)
 					.render(&terminal.screen);
@@ -102,6 +117,34 @@ int main(int argc, char *argv[]){
 			}else if (currCh=='d'){
 				debug= !(debug);
 				terminal.screen.fill();
+			}else if (currCh=='g'){ //goto
+				gtWin.startx=midOfst(terminal.screen.cols,gtWin.width);
+				gtWin.starty=midOfst(terminal.screen.rows,gtWin.height);
+				gtText.starty=gtWin.starty+1;
+				gtText.startx=midOfst(terminal.screen.cols,(int)gtText.text.size());
+
+				while (true){
+					inText.starty=gtWin.starty+2;
+					inText.startx=midOfst(terminal.screen.cols,(int)inText.text.size());
+					inText.render(&terminal.screen);
+					gtWin.render(&terminal.screen);
+					gtText.render(&terminal.screen);
+					terminal.project();
+
+					char inChar=cinchr();
+					if (std::isdigit(inChar)){
+						inText.text+=inChar;
+					}else if (inChar=='\0'){
+						nc::sleep(0,100);
+					}else{
+						break;
+					}
+				}
+				if (!(inText.text=="")){
+					video.frame(stoi(inText.text));
+				}
+				terminal.screen.fill();
+				inText.text="";
 			}else if (!(currCh=='\0')){
 				cout << '\a';
 			}

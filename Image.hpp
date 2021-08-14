@@ -234,7 +234,8 @@ namespace nc{
 		}
 
 		void frame(int id){ //AAAAAAAAA
-			video.set(cv::CAP_PROP_POS_FRAMES,id);
+			allTime=((id/fps)*1000)+((id%fps)*frameTime);
+			video.set(cv::CAP_PROP_POS_MSEC,allTime);
 		}
 
 		void start(){
