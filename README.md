@@ -38,13 +38,13 @@ play /path/to/video.extension
 - `d`: enable debug mode 
 - `g`: goto frame
 ### Debug stats:
-- Frame: current frame
-- fps: fps stated in video header
-- Cms: ms that the viewer should be displaying 
-- Rms: ms that the viewer is actually displaying
-- Render: Time taken to proccess frame from rgb to xterm
-- Project: Time taken to display frame on terminal
-- error: difference between Cms and Rms on previous frame
+- `Frame`: current frame
+- `fps`: fps stated in video header
+- `Cms`: ms that the viewer should be displaying 
+- `Rms`: ms that the viewer is actually displaying
+- `Render`: Time taken to proccess frame from rgb to xterm
+- `Project`: Time taken to display frame on terminal
+- `error`: difference between Cms and Rms on previous frame
 ## Features
 - Fast and written in c++
 - Accelerates and decelerates to make up for lag/overspeed.

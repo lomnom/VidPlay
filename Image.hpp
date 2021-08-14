@@ -38,7 +38,8 @@ namespace nc{
 		return abs(a-b);
 	}
 
-	uint8_t HexToXterm(array<uint8_t,3> color){ //SLOWWHGFRDVBHGFVTYG
+	unordered_map<array<uint8_t,3>,uint8_t> lookup;
+	uint8_t _HexToXterm(array<uint8_t,3> color){
 		uint8_t result=0;
 		array<uint8_t,3> currCol=XtermToHex[0];
 		uint16_t currDiff=diff(color[0],currCol[0])+diff(color[1],currCol[1])+diff(color[2],currCol[2]);
@@ -52,10 +53,18 @@ namespace nc{
 				result=col;
 			}
 		}
+		lookup[color]=result;
 		return result;
 	}
 
-	unordered_map<array<uint8_t,3>,uint8_t> lookup;
+	uint8_t HexToXterm(array<uint8_t,3> color){ //SLOWWHGFRDVBHGFVTYG
+		if (lookup.count(color)){
+			return lookup[color];
+		}else{
+			return _HexToXterm(color);
+		}
+	}
+
 	Mat HexToXterm(Mat rgbImg){ //(un)speed
 		int height=rgbImg.rows;
 		int width=rgbImg.cols;
@@ -68,14 +77,7 @@ namespace nc{
 			uchar* xtermPtr = xtermImage.ptr<uchar>(row);
 			for (int col=0;col<width;col++){
 				int colIndex=col*3;
-				array<uint8_t,3> color={resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]};
-				if (lookup.count(color)){
-					xtermPtr[col]=lookup.at(color);
-				}else{
-					uint8_t xtermC=HexToXterm(color);
-					lookup[color]=xtermC;
-					xtermPtr[col]=xtermC;
-				}
+				xtermPtr[col]=HexToXterm(array<uint8_t,3>{resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]});
 			}
 		}
 
