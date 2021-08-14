@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
 					"\nRms: "+to_string(video.allTime)+"ms"+ //real ms
 					"\nrender: "+to_string(renderTracker.time())+"ms"+ //time taken for render
 					"\nproject: "+to_string(projTracker.time())+"ms" //time for project
-					"\nerror: "+to_string(video.offset)+"ms" //error in correct and real
+					"\nerror: "+to_string((video.ms()-video.frameTime)-video.allTime)+"ms" //error in correct and real
 					,Style(-1,-1,0)
 				)
 					.render(&terminal.screen);
@@ -101,53 +101,58 @@ int main(int argc, char *argv[]){
 			terminal.project();
 			projTracker.end();
 
+			char currCh=cinchr();
+			if (currCh=='\0'){}
+			else{
+				video.end();
+				if (currCh=='p'){
+					Text("Paused. Press P to unpause",Style(-1,-1,0),terminal.screen.cols/2-13,0).render(&terminal.screen);
+					terminal.project(); 
+					while (!(cinchr()=='p')){nc::sleep(0,500);}
+					terminal.screen.fill();
+				}else if (currCh=='q'){
+					endKeyListener=true;
+					keyThread.join();
+					break;
+				}else if (currCh=='d'){
+					debug= !(debug);
+					terminal.screen.fill();
+				}else if (currCh=='g'){ //goto
+					gtWin.startx=midOfst(terminal.screen.cols,gtWin.width);
+					gtWin.starty=midOfst(terminal.screen.rows,gtWin.height);
+					gtText.starty=gtWin.starty+1;
+					gtText.startx=midOfst(terminal.screen.cols,(int)gtText.text.size());
+
+					while (true){
+						inText.starty=gtWin.starty+2;
+						inText.startx=midOfst(terminal.screen.cols,(int)inText.text.size());
+						inText.render(&terminal.screen);
+						gtWin.render(&terminal.screen);
+						gtText.render(&terminal.screen);
+						terminal.project();
+
+						char inChar=cinchr();
+						if (std::isdigit(inChar)){
+							inText.text+=inChar;
+						}else if (inChar=='\0'){
+							nc::sleep(0,100);
+						}else{
+							break;
+						}
+					}
+					if (!(inText.text=="")){
+						video.frame(stoi(inText.text));
+					}
+					terminal.screen.fill();
+					inText.text="";
+				}else{
+					cout << '\a';
+				}
+				video.start();
+			}
+
 			video.end();
 			video.sync();
-
-			char currCh=cinchr();
-			if (currCh=='p'){
-				Text("Paused. Press P to unpause",Style(-1,-1,0),terminal.screen.cols/2-13,0).render(&terminal.screen);
-				terminal.project(); 
-				while (!(cinchr()=='p')){nc::sleep(0,500);}
-				terminal.screen.fill();
-			}else if (currCh=='q'){
-				endKeyListener=true;
-				keyThread.join();
-				break;
-			}else if (currCh=='d'){
-				debug= !(debug);
-				terminal.screen.fill();
-			}else if (currCh=='g'){ //goto
-				gtWin.startx=midOfst(terminal.screen.cols,gtWin.width);
-				gtWin.starty=midOfst(terminal.screen.rows,gtWin.height);
-				gtText.starty=gtWin.starty+1;
-				gtText.startx=midOfst(terminal.screen.cols,(int)gtText.text.size());
-
-				while (true){
-					inText.starty=gtWin.starty+2;
-					inText.startx=midOfst(terminal.screen.cols,(int)inText.text.size());
-					inText.render(&terminal.screen);
-					gtWin.render(&terminal.screen);
-					gtText.render(&terminal.screen);
-					terminal.project();
-
-					char inChar=cinchr();
-					if (std::isdigit(inChar)){
-						inText.text+=inChar;
-					}else if (inChar=='\0'){
-						nc::sleep(0,100);
-					}else{
-						break;
-					}
-				}
-				if (!(inText.text=="")){
-					video.frame(stoi(inText.text));
-				}
-				terminal.screen.fill();
-				inText.text="";
-			}else if (!(currCh=='\0')){
-				cout << '\a';
-			}
 		}
 	}catch (int){
 		Text("Video ended! press any key to quit",Style(-1,-1,0),terminal.screen.cols/2-13,0).render(&terminal.screen);

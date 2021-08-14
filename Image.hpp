@@ -181,7 +181,6 @@ namespace nc{
 
 		double frameTime;
 		double sleepTime;
-		double offset;
 
 		TimeTracker frameTracker;
 		double allTime;
@@ -248,17 +247,16 @@ namespace nc{
 		}
 
 		void sync(){ //>0 is too fast, <0 is too slow
+			start();
 			sleepTime=ms()-allTime;
 			sleepTime= sleepTime>0 ? sleepTime : 0;
 
 			int sleepTimeMs=sleepTime;
 			int sleepTimeMcrs=(sleepTime-(int)sleepTime)*1000;
 
-			start();
 			sleep(0,sleepTimeMs,sleepTimeMcrs,0);
-			end();
 
-			offset=ms()-allTime;
+			end();
 		}
 	};
 }
