@@ -37,6 +37,8 @@ play /path/to/video.extension
 - `p`: pause/unpause
 - `d`: enable debug mode 
 - `g`: goto frame
+- `e`: reduce greyscaling
+- `r`: increase greyscaling
 ### Debug stats:
 - `Frame`: current frame
 - `fps`: fps stated in video header
@@ -45,6 +47,7 @@ play /path/to/video.extension
 - `Render`: Time taken to proccess frame from rgb to xterm
 - `Project`: Time taken to display frame on terminal
 - `error`: difference between Cms and Rms on previous frame
+- `greynessTresh`: grayscaling 
 ## Features
 - Fast and written in c++
 - Accelerates and decelerates to make up for lag/overspeed.

@@ -11,7 +11,7 @@
 #include <string>
 #include <array>
 #include <cmath>
-#include "XtermToHex.hpp"
+#include "Convert.hpp"
 
 using std::string,std::array,std::unordered_map,std::out_of_range;
 using cv::Mat,cv::Size,cv::Scalar,cv::VideoCapture;
@@ -29,43 +29,9 @@ struct std::hash<std::array<uint8_t, N>> {
 };
 
 namespace nc{
-	uint16_t abs(int16_t n){ 
-		int16_t const mask = n >> (sizeof(int16_t) * 8 - 1); 
-		return ((n + mask) ^ mask);
-	} 
+	uint8_t HexToXterm(array<uint8_t,3> color){return approxXt(color);}
 
-	uint16_t diff(int16_t a,int16_t b){
-		return abs(a-b);
-	}
-
-	unordered_map<array<uint8_t,3>,uint8_t> lookup;
-	uint8_t _HexToXterm(array<uint8_t,3> color){
-		uint8_t result=0;
-		array<uint8_t,3> currCol=XtermToHex[0];
-		uint16_t currDiff=diff(color[0],currCol[0])+diff(color[1],currCol[1])+diff(color[2],currCol[2]);
-		uint16_t leastDiff=currDiff;
-
-		for (int col=1;col<256;col++){
-			currCol=XtermToHex[col];
-			currDiff=diff(color[0],currCol[0])+diff(color[1],currCol[1])+diff(color[2],currCol[2]);
-			if (currDiff<leastDiff){
-				leastDiff=currDiff;
-				result=col;
-			}
-		}
-		lookup[color]=result;
-		return result;
-	}
-
-	uint8_t HexToXterm(array<uint8_t,3> color){ //SLOWWHGFRDVBHGFVTYG
-		if (lookup.count(color)){
-			return lookup[color];
-		}else{
-			return _HexToXterm(color);
-		}
-	}
-
-	Mat HexToXterm(Mat rgbImg){ //(un)speed
+	Mat HexToXterm(Mat rgbImg){
 		int height=rgbImg.rows;
 		int width=rgbImg.cols;
 		Mat xtermImage=Mat(height,width,CV_8UC1,Scalar(0));

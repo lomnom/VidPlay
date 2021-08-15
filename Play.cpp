@@ -91,7 +91,8 @@ int main(int argc, char *argv[]){
 					"\nRms: "+to_string(video.allTime)+"ms"+ //real ms
 					"\nrender: "+to_string(renderTracker.time())+"ms"+ //time taken for render
 					"\nproject: "+to_string(projTracker.time())+"ms" //time for project
-					"\nerror: "+to_string((video.ms()-video.frameTime)-video.allTime)+"ms" //error in correct and real
+					"\nerror: "+to_string((video.ms()-video.frameTime)-video.allTime)+"ms"+ //error in correct and real
+					"\ngreynessTresh: "+to_string(nc::greynessTresh)
 					,Style(-1,-1,0)
 				)
 					.render(&terminal.screen);
@@ -145,6 +146,10 @@ int main(int argc, char *argv[]){
 					}
 					terminal.screen.fill();
 					inText.text="";
+				}else if (currCh=='e'){
+					nc::greynessTresh+=5;
+				}else if (currCh=='r'){
+					nc::greynessTresh-=5;
 				}else{
 					cout << '\a';
 				}
