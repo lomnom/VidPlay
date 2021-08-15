@@ -3,6 +3,7 @@
 
 #include "nncurses/Screens.hpp"
 #include "nncurses/Styles.hpp"
+#include "nncurses/Convert.hpp"
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core.hpp>
@@ -11,7 +12,6 @@
 #include <string>
 #include <array>
 #include <cmath>
-#include "Convert.hpp"
 
 using std::string,std::array,std::unordered_map,std::out_of_range;
 using cv::Mat,cv::Size,cv::Scalar,cv::VideoCapture;
