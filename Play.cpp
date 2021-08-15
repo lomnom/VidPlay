@@ -92,7 +92,9 @@ int main(int argc, char *argv[]){
 					"\nrender: "+to_string(renderTracker.time())+"ms"+ //time taken for render
 					"\nproject: "+to_string(projTracker.time())+"ms" //time for project
 					"\nerror: "+to_string((video.ms()-video.frameTime)-video.allTime)+"ms"+ //error in correct and real
-					"\ngreynessTresh: "+to_string(nc::greynessTresh)
+					"\ngreynessTresh: "+to_string(nc::greynessTresh)+
+					"\nbrightnessTresh: "+to_string(nc::brightnessTresh)+
+					"\ngsBlack: "+(nc::gsBlack?"true":"false")
 					,Style(-1,-1,0)
 				)
 					.render(&terminal.screen);
@@ -146,11 +148,12 @@ int main(int argc, char *argv[]){
 					}
 					terminal.screen.fill();
 					inText.text="";
-				}else if (currCh=='e'){
-					nc::greynessTresh+=5;
-				}else if (currCh=='r'){
-					nc::greynessTresh-=5;
-				}else{
+				}else if (currCh=='e') nc::greynessTresh+=5;
+				else if (currCh=='r') nc::greynessTresh-=5;
+				else if (currCh=='E') nc::brightnessTresh+=5;
+				else if (currCh=='R') nc::brightnessTresh-=5;
+				else if (currCh=='t') nc::gsBlack= !(nc::gsBlack);
+				else{
 					cout << '\a';
 				}
 				video.start();

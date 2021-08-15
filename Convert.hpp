@@ -33,6 +33,10 @@ namespace nc{
 		return (diff(col[0],(col[1]+col[2])/2)+diff(col[1],(col[0]+col[2])/2)+diff(col[2],(col[1]+col[0])/2))/3;
 	}
 
+	uint8_t brightness(array<uint8_t,3> col){ //lmao
+		return (col[0]+col[1]+col[2])/3;
+	}
+
 	/////////////216 xterm-256color added colors
 	uint8_t approxNc(uint8_t val){ //approx new colors to indexes in xtVals
 		if (val<=55) return 0;
@@ -67,7 +71,7 @@ namespace nc{
 	}
 
 	uint8_t approxGs(array<uint8_t,3> color){ //approximate rgb to nearest greyscale
-		return approxGs((color[0]+color[1]+color[2])/3);
+		return approxGs(brightness(color));
 	}
 
 	pair<uint8_t,array<uint8_t,3>> approxGsRs(array<uint8_t,3> color){ 
@@ -104,9 +108,11 @@ namespace nc{
 	};
 
 	/////////////rgb to xterm
-	uint8_t greynessTresh=140;
+	uint8_t greynessTresh=155;
+	uint8_t brightnessTresh=30;
+	bool gsBlack=true;
 	uint8_t approxXt(array<uint8_t,3> color){ 
-		return greyness(color)>greynessTresh ? 232+approxGs(color) : 16+approxNc(color);
+		return brightness(color)<brightnessTresh || (gsBlack && (color[0]<95 && color[1]<95 && color[2]<95)) || greyness(color)>greynessTresh ? 232+approxGs(color) : 16+approxNc(color);
 	}
 
 	array<uint8_t,3> xtTOrgb(uint8_t xt){

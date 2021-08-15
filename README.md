@@ -39,6 +39,9 @@ play /path/to/video.extension
 - `g`: goto frame
 - `e`: reduce greyscaling
 - `r`: increase greyscaling
+- `E`: reduce brightnessTresh
+- `R`: increase brightnessTresh
+- `t`: toggle turning blackened colored pixles to greyscale
 ### Debug stats:
 - `Frame`: current frame
 - `fps`: fps stated in video header
@@ -48,6 +51,8 @@ play /path/to/video.extension
 - `Project`: Time taken to display frame on terminal
 - `error`: difference between Cms and Rms on previous frame
 - `greynessTresh`: grayscaling 
+- `brightnessTresh`: treshold before pixels are greyscaled
+- `gsBlack`: if blackened colored pixles are turned to greyscale
 ## Features
 - Fast and written in c++
 - Accelerates and decelerates to make up for lag/overspeed.
