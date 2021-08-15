@@ -29,9 +29,7 @@ struct std::hash<std::array<uint8_t, N>> {
 };
 
 namespace nc{
-	uint8_t HexToXterm(array<uint8_t,3> color){return approxXt(color);}
-
-	Mat HexToXterm(Mat rgbImg){
+	Mat HexToXterm(uint8_t greynessTresh,uint8_t brightnessTresh,bool gsBlack,Mat rgbImg){
 		int height=rgbImg.rows;
 		int width=rgbImg.cols;
 		Mat xtermImage=Mat(height,width,CV_8UC1,Scalar(0));
@@ -43,7 +41,7 @@ namespace nc{
 			uchar* xtermPtr = xtermImage.ptr<uchar>(row);
 			for (int col=0;col<width;col++){
 				int colIndex=col*3;
-				xtermPtr[col]=HexToXterm(array<uint8_t,3>{resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]});
+				xtermPtr[col]=approxXt(gsBlack,greynessTresh,brightnessTresh,array<uint8_t,3>{resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]});
 			}
 		}
 
@@ -96,13 +94,21 @@ namespace nc{
 	class Image{ //AAHGVGVNHSG
 	public:
 		Mat image;
+		uint8_t greynessTresh;
+		uint8_t brightnessTresh;
+		bool gsBlack;
 		bool converted=false;
 		int height,width;
 		int rHeight,rWidth;
 		int tHeight,tWidth;
 		Mat xtermImage;
 
-		Image(Mat image): image(image){
+		Image(uint8_t greynessTresh,uint8_t brightnessTresh,bool gsBlack,Mat image): 
+			image(image), 
+			greynessTresh(greynessTresh),
+			brightnessTresh(brightnessTresh),
+			gsBlack(gsBlack)
+		{
 			height=image.rows;
 			width=image.cols;
 		}
@@ -113,7 +119,7 @@ namespace nc{
 			Size newSize(rWidth,rHeight);
 			Mat resized;
 			resize(image,resized,newSize);
-			xtermImage=HexToXterm(resized);
+			xtermImage=HexToXterm(greynessTresh,brightnessTresh,gsBlack,resized);
 			converted=true;
 			tHeight=(rHeight/2)+(rHeight%2);
 			tWidth=rWidth;
@@ -153,10 +159,17 @@ namespace nc{
 		TimeTracker frameTracker;
 		double allTime;
 
-		Video(VideoCapture capture): 
+		uint8_t greynessTresh;
+		uint8_t brightnessTresh;
+		bool gsBlack;
+
+		Video(uint8_t greynessTresh,uint8_t brightnessTresh,bool gsBlack,VideoCapture capture): 
 			video(capture), 
 			fps(video.get(cv::CAP_PROP_FPS)),
-			frameTime(((1.0f/fps)*1000.0f)-5)
+			frameTime(((1.0f/fps)*1000.0f)-5),
+			greynessTresh(greynessTresh),
+			brightnessTresh(brightnessTresh),
+			gsBlack(gsBlack)
 		{}
 
 		void render(Screen* scr,int startX,int startY){
@@ -165,7 +178,7 @@ namespace nc{
 			if (frame.empty()){
 				throw -1;
 			}
-			Image image(frame);
+			Image image(greynessTresh,brightnessTresh,gsBlack,frame);
 			image.proccess(scr);
 			image.render(scr,startX,startY);
 		}
@@ -176,7 +189,7 @@ namespace nc{
 			if (frame.empty()){
 				throw -1;
 			}
-			Image image(frame);
+			Image image(greynessTresh,brightnessTresh,gsBlack,frame);
 			image.proccess(scr);
 			image.render(scr);
 		}
@@ -187,7 +200,7 @@ namespace nc{
 			if (frame.empty()){
 				throw -1;
 			}
-			Image image(frame);
+			Image image(greynessTresh,brightnessTresh,gsBlack,frame);
 			image.proccess(height,width);
 			image.render(scr,startX,startY);
 		}
