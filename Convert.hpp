@@ -82,32 +82,43 @@ namespace nc{
 		return {val,val,val};
 	}
 
+	/////////////16 classic colors SKRERERRERERRRERRRRRREEEEE, TODO
+	array<uint8_t,4> an8Vals{0,128,192,155};
+	array<uint8_t,3> ansi8[16]{ //doesnt deserve to exist
+		{0,0,0},
+		{128,0,0},
+		{0,128,0},
+		{128,128,0},
+		{0,0,128},
+		{128,0,128},
+		{0,128,128},
+		{192,192,192},
+		{128,128,128},
+		{255,0,0},
+		{0,255,0},
+		{255,255,0},
+		{0,0,255},
+		{255,0,255},
+		{0,255,255},
+		{255,255,255}
+	};
+
 	/////////////rgb to xterm
 	uint8_t greynessTresh=140;
 	uint8_t approxXt(array<uint8_t,3> color){ 
 		return greyness(color)>greynessTresh ? 232+approxGs(color) : 16+approxNc(color);
 	}
 
-	// /////////////16 classic colors SKRERERRERERRRERRRRRREEEEE, TODO
-	// array<uint8_t,4> an8Vals{0,128,192,155};
-	// array<uint8_t,3> ansi8[16]{ //doesnt deserve to exist
-	// 	{0,0,0},
-	// 	{128,0,0},
-	// 	{0,128,0},
-	// 	{128,128,0},
-	// 	{0,0,128},
-	// 	{128,0,128},
-	// 	{0,128,128},
-	// 	{192,192,192},
-	// 	{128,128,128},
-	// 	{255,0,0},
-	// 	{0,255,0},
-	// 	{255,255,0},
-	// 	{0,0,255},
-	// 	{255,0,255},
-	// 	{0,255,255},
-	// 	{255,255,255}
-	// };
+	array<uint8_t,3> xtTOrgb(uint8_t xt){
+		if (xt>=16){
+			if (xt<=231){
+				return ncTOrgb(xt);
+			}else{
+				return gsTOrgb(xt);
+			}
+		}
+		throw -1;
+	}
 }
 
 #undef pair
