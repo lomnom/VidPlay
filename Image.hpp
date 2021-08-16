@@ -1,9 +1,7 @@
 #ifndef ncImage
 #define ncImage
 
-#include "nncurses/Screens.hpp"
-#include "nncurses/Styles.hpp"
-#include "nncurses/Convert.hpp"
+#include "nncurses/nncurses.hpp"
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core.hpp>
@@ -41,55 +39,12 @@ namespace nc{
 			uchar* xtermPtr = xtermImage.ptr<uchar>(row);
 			for (int col=0;col<width;col++){
 				int colIndex=col*3;
-				xtermPtr[col]=approxXt(gsBlack,greynessTresh,brightnessTresh,array<uint8_t,3>{resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]});
+				xtermPtr[col]=approxXt(gsBlack,greynessTresh,brightnessTresh,array<int16_t,3>{resizedRPtr[colIndex],resizedGPtr[colIndex],resizedBPtr[colIndex]});
 			}
 		}
 
 		return xtermImage;
 	}
-
-	class Pixles{
-	public:
-		Mat pixles;
-		int height,width;
-		int theight,twidth;
-		string character=blocks[0b1100];
-		Pixles(Mat pixles): pixles(pixles){
-			height=pixles.rows;
-			width=pixles.cols;
-			twidth=width;
-			theight=(height/2)+(height%2);
-		}
-
-		void render(Screen* screen,int startX,int startY){
-			for (int row=0;row<height/2;row++){
-				uchar* topPtr = pixles.ptr<uchar>(row*2);
-				uchar* btmPtr = pixles.ptr<uchar>(row*2+1);
-				for (int col=0;col<width;col++){
-					screen->screen[row+startY][col+startX]=Texture( 
-						character,
-						Style(
-							topPtr[col],
-							btmPtr[col],
-							0
-						)
-					);
-				}
-			}
-			if ( height%2==1 ){
-				uchar* ptr = pixles.ptr<uchar>(height-1);
-				for (int col=0;col<width;col++){
-					screen->screen[startY+theight-1][startX+col]=Texture(
-						character,
-						Style(
-							ptr[col],
-							-1,0
-						)
-					);
-				}
-			}
-		}
-	};
 
 	class Image{ //AAHGVGVNHSG
 	public:
@@ -102,6 +57,7 @@ namespace nc{
 		int rHeight,rWidth;
 		int tHeight,tWidth;
 		Mat xtermImage;
+		const string character=blocks[0b1100];
 
 		Image(uint8_t greynessTresh,uint8_t brightnessTresh,bool gsBlack,Mat image): 
 			image(image), 
@@ -109,6 +65,7 @@ namespace nc{
 			brightnessTresh(brightnessTresh),
 			gsBlack(gsBlack)
 		{
+			if (image.empty()) throw -1;
 			height=image.rows;
 			width=image.cols;
 		}
@@ -137,7 +94,32 @@ namespace nc{
 
 		void render(Screen* screen,int startX,int startY){
 			if (converted){
-				Pixles(xtermImage).render(screen,startX,startY);
+				for (int row=0;row<rHeight/2;row++){
+					uchar* topPtr = xtermImage.ptr<uchar>(row*2);
+					uchar* btmPtr = xtermImage.ptr<uchar>(row*2+1);
+					for (int col=0;col<rWidth;col++){
+						screen->screen[row+startY][col+startX]=Texture( 
+							character,
+							Style(
+								topPtr[col],
+								btmPtr[col],
+								0
+							)
+						);
+					}
+				}
+				if ( height%2==1 ){
+					uchar* ptr = xtermImage.ptr<uchar>(height-1);
+					for (int col=0;col<rWidth;col++){
+						screen->screen[startY+rHeight-1][startX+col]=Texture(
+							character,
+							Style(
+								ptr[col],
+								-1,0
+							)
+						);
+					}
+				}
 			}else{
 				throw -1;
 			}
@@ -148,9 +130,9 @@ namespace nc{
 		}
 	};
 
-	class Video{
+	class VideoTimer{
 	public:
-		VideoCapture video;
+		VideoCapture& video;
 		int fps;
 
 		double frameTime;
@@ -159,51 +141,11 @@ namespace nc{
 		TimeTracker frameTracker;
 		double allTime;
 
-		uint8_t greynessTresh;
-		uint8_t brightnessTresh;
-		bool gsBlack;
-
-		Video(uint8_t greynessTresh,uint8_t brightnessTresh,bool gsBlack,VideoCapture capture): 
-			video(capture), 
+		VideoTimer(VideoCapture& video):
+			video(video), 
 			fps(video.get(cv::CAP_PROP_FPS)),
-			frameTime(((1.0f/fps)*1000.0f)-5),
-			greynessTresh(greynessTresh),
-			brightnessTresh(brightnessTresh),
-			gsBlack(gsBlack)
+			frameTime(((1.0f/fps)*1000.0f)-5)
 		{}
-
-		void render(Screen* scr,int startX,int startY){
-			Mat frame;
-			video >> frame;
-			if (frame.empty()){
-				throw -1;
-			}
-			Image image(greynessTresh,brightnessTresh,gsBlack,frame);
-			image.proccess(scr);
-			image.render(scr,startX,startY);
-		}
-
-		void render(Screen* scr){
-			Mat frame;
-			video >> frame;
-			if (frame.empty()){
-				throw -1;
-			}
-			Image image(greynessTresh,brightnessTresh,gsBlack,frame);
-			image.proccess(scr);
-			image.render(scr);
-		}
-
-		void render(Screen* scr,int height,int width,int startX,int startY){
-			Mat frame;
-			video >> frame;
-			if (frame.empty()){
-				throw -1;
-			}
-			Image image(greynessTresh,brightnessTresh,gsBlack,frame);
-			image.proccess(height,width);
-			image.render(scr,startX,startY);
-		}
 
 		int frame(){
 			return video.get(cv::CAP_PROP_POS_FRAMES);
@@ -211,6 +153,11 @@ namespace nc{
 
 		double ms(){
 			return video.get(cv::CAP_PROP_POS_MSEC);
+		}
+
+		void ms(double ms){
+			video.set(cv::CAP_PROP_POS_MSEC,ms);
+			allTime=ms;
 		}
 
 		void frame(int id){ //AAAAAAAAA
@@ -222,12 +169,12 @@ namespace nc{
 			frameTracker.start();
 		}
 
-		void end(){
+		void end(bool add){
 			frameTracker.end();
-			allTime+=frameTracker.time();
+			if (add) allTime+=frameTracker.time();
 		}
 
-		void sync(){ //>0 is too fast, <0 is too slow
+		void sync(bool add){ //>0 is too fast, <0 is too slow
 			start();
 			sleepTime=ms()-allTime;
 			sleepTime= sleepTime>0 ? sleepTime : 0;
@@ -237,7 +184,7 @@ namespace nc{
 
 			sleep(0,sleepTimeMs,sleepTimeMcrs,0);
 
-			end();
+			end(add);
 		}
 	};
 }

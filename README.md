@@ -36,12 +36,13 @@ play /path/to/video.extension
 - `q`: quit
 - `p`: pause/unpause
 - `d`: enable debug mode 
-- `g`: goto frame
 - `e`: reduce greyscaling
 - `r`: increase greyscaling
 - `E`: reduce brightnessTresh
 - `R`: increase brightnessTresh
 - `t`: toggle turning blackened colored pixles to greyscale
+- `a`: go back 5s
+- `s`: go front 5s
 ### Debug stats:
 - `Frame`: current frame
 - `fps`: fps stated in video header
@@ -64,4 +65,3 @@ play /path/to/video.extension
 - [Yoasabi - Monster](https://drive.google.com/file/d/1iMFqQUvV7-KRJiZ2E4ukrAtQNSoo2q0g/view?usp=sharing)
 - [Tunal tunak tun](https://drive.google.com/file/d/1U-miDEqPg-n7MepF9BeI8_7sxqDgHSZE/view?usp=sharing)
 ## TODO
-- Make lookuptable smaller
