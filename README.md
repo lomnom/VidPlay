@@ -69,4 +69,3 @@ play /path/to/media.extension
 ## TODO
 - Update videos
 - dITheRiNG???/?!!?!1?/
-- More accurate timer (***why is it always slightly off after 6 mins***)
