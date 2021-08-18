@@ -17,7 +17,7 @@ git clone https://github.com/lomnom/VidPlay
 cd VidPlay
 git clone https://github.com/lomnom/nncurses
 sudo apt-get install libopencv-dev
-clang++ -std=c++2a -O3 $(pkg-config --cflags --libs opencv) -lpthread -pthread Play.cpp -o play
+clang++ -std=c++2a -O3 $(pkg-config --cflags --libs opencv) -lpthread -pthread Play.cpp -o play || clang++ -std=c++2a -O3 $(pkg-config --cflags --libs opencv4) -lpthread -pthread Play.cpp -o play
 mv play /usr/local/bin/play
 cd ..
 rm -r VidPlay
