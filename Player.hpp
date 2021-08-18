@@ -192,5 +192,6 @@ void imagePlayer(string file,Terminal& terminal){
 		else if (currCh=='E') brightnessTresh+=5;
 		else if (currCh=='R') brightnessTresh-=5;
 		else if (currCh=='t') gsBlack= !(gsBlack);
+		else cout << '\a';
 	}
 }
