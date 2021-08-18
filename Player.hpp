@@ -1,7 +1,7 @@
 #include "Image.hpp"
 #include <thread>
 #include <vector>
-using nc::Text,nc::Texture,nc::HollowRectangle,nc::Style,std::cout;
+using nc::Text,nc::Texture,nc::HollowRectangle,nc::Style,std::cout,cv::imread;
 using cv::VideoCapture,nc::VideoTimer,std::thread,nc::Terminal,std::stoi;
 using nc::TimeTracker,std::string,std::to_string,std::vector,nc::Image;
 
@@ -88,7 +88,7 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 				statms("Rms",timer.allTime)									+ //real ms
 				statms("proccess",procTracker.time())						+ //time taken for render
 				statms("project",projTime)									+ //time for project
-				statms("error",timer.sleepTime,timer.sleptTime)				+ //error in correct and real
+				statms("error",timer.sleepTime-timer.sleptTime)				+ //error in correct and real
 				statms("sleepTime",timer.sleepTime)							+ //time to delay for previous frame
 				statms("sleptTime",timer.sleptTime)							+ //time actually delayed
 				stat("greynessTresh",greynessTresh)							+
@@ -107,6 +107,9 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 			Text("Paused. Press P to unpause",Style(-1,-1,0),terminal.screen.cols/2-13,0).render(&terminal.screen);
 
 		terminal.project();
+
+		if (debug) terminal.screen.fill();
+
 		projTracker.end();
 
 		///////////handle keys
@@ -153,5 +156,41 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 
 		timer.end(!(paused));
 		timer.sync(!(paused));
+	}
+}
+
+void imagePlayer(string file,Terminal& terminal){
+	Mat theMat=imread(file);
+	uint8_t brightnessTresh=45;
+	uint8_t greynessTresh=155;
+	bool gsBlack=true;
+	bool debug=false;
+
+	while (true){
+		Image image(greynessTresh,brightnessTresh,gsBlack,theMat);
+		image.proccess(&terminal.screen);
+		image.render(&terminal.screen);
+
+		if (debug){
+			Text(
+				nnlstat("greynessTresh",greynessTresh)+
+				stat("brightnessTresh",brightnessTresh)+
+				"\ngsBlack: "+(gsBlack?"true":"false")						
+				,Style(-1,-1,0)
+			).render(&terminal.screen);
+		}
+
+		terminal.project();
+		terminal.screen.fill();
+
+		char currCh=nc::cinchr();
+
+		if (currCh=='q') break;
+		else if (currCh=='d') debug= !(debug);
+		else if (currCh=='e') greynessTresh+=5;
+		else if (currCh=='r') greynessTresh-=5;
+		else if (currCh=='E') brightnessTresh+=5;
+		else if (currCh=='R') brightnessTresh-=5;
+		else if (currCh=='t') gsBlack= !(gsBlack);
 	}
 }
