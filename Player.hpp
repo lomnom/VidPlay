@@ -50,9 +50,9 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 
 	Mat frame;
 	video >> frame;
+	timer.start(); //start stopwatch
 
 	while (true){
-		timer.start();	
 		end=false;
 
 		///////////proccess frames
@@ -85,12 +85,13 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 				nnlstat("frame",timer.frame())								+
 				stat("fps",timer.fps)										+
 				statms("Cms",timer.ms())									+ //correct ms
-				statms("Rms",timer.allTime)									+ //real ms
+				statms("Rms",timer.timer.time())									+ //real ms
 				statms("proccess",procTracker.time())						+ //time taken for render
 				statms("project",projTime)									+ //time for project
-				statms("error",timer.sleepTime-timer.sleptTime)				+ //error in correct and real
+				statms("error",timer.time()-timer.ms()+timer.frameTime)		+ //error in correct and real
 				statms("sleepTime",timer.sleepTime)							+ //time to delay for previous frame
 				statms("sleptTime",timer.sleptTime)							+ //time actually delayed
+				statms("frameTime",timer.frameTime)							+ //time actually delayed
 				stat("greynessTresh",greynessTresh)							+
 				stat("brightnessTresh",brightnessTresh)						+
 				"\ngsBlack: "+(gsBlack?"true":"false")						+
@@ -116,14 +117,20 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 		char currCh=cinchr();
 		if (currCh=='\0'){}
 		else{ 
-			timer.end(!(paused));
 			if (currCh=='e') greynessTresh+=5;
 			else if (currCh=='r') greynessTresh-=5;
 			else if (currCh=='E') brightnessTresh+=5;
 			else if (currCh=='R') brightnessTresh-=5;
 			else if (currCh=='t') gsBlack= !(gsBlack);
-			else if (currCh=='p') paused=!(paused);
-			else if (currCh=='q'){
+			else if (currCh=='p') {
+				if (paused){
+					paused=false;
+					timer.start();
+				}else{
+					paused=true;
+					timer.stop();
+				}
+			}else if (currCh=='q'){
 				endKeyListener=true;
 				keyThread.join();
 				break;
@@ -141,7 +148,7 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 					Text(ms,Style(-1,-1,0),nc::midOfst(terminal.screen.cols,(int)ms.size()),terminal.screen.rows/2+1).render(&terminal.screen);
 					terminal.project();
 				}
-				timer.ms(stoi(ms));
+				timer.ms(stoi(ms)); //this stops video
 				Mat aFrame;
 				video >> aFrame;
 				if (!(aFrame.empty())){
@@ -149,13 +156,12 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 				}else{
 					end=true;
 				}
+				if (!(paused)) timer.start(); //start stopwatch again after being stopped and changed
 			}
 			else cout << '\a';
-			timer.start();
 		}
 
-		timer.end(!(paused));
-		timer.sync(!(paused));
+		timer.sync(); //make stopwatch time same as video watch
 	}
 }
 

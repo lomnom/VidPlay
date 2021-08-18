@@ -12,7 +12,7 @@
 #include <cmath>
 
 using std::string,std::array,std::unordered_map,std::out_of_range;
-using cv::Mat,cv::Size,cv::Scalar,cv::VideoCapture;
+using cv::Mat,cv::Size,cv::Scalar,cv::VideoCapture,nc::Stopwatch;
 
 template<size_t N> 
 struct std::hash<std::array<uint8_t, N>> {
@@ -130,7 +130,7 @@ namespace nc{
 		}
 	};
 
-	class VideoTimer{
+	class VideoTimer{ //SKRERERRERERERRERE
 	public:
 		VideoCapture& video;
 		double fps;
@@ -139,8 +139,9 @@ namespace nc{
 		double sleepTime;
 		double sleptTime;
 
-		TimeTracker frameTracker;
-		double allTime=0;
+		bool stopped;
+
+		Stopwatch timer;
 
 		VideoTimer(VideoCapture& video):
 			video(video), 
@@ -158,12 +159,14 @@ namespace nc{
 
 		void ms(double ms){
 			video.set(cv::CAP_PROP_POS_MSEC,ms);
-			allTime=ms;
+			timer.othTime=ms;
+			timer.stopped=true;
 		}
 
 		void frame(int id){ //AAAAAAAAA
-			allTime=((id/fps)*1000)+(fmod(id,fps)*frameTime);
-			video.set(cv::CAP_PROP_POS_MSEC,allTime);
+			timer.othTime=((id/fps)*1000)+(fmod(id,fps)*frameTime);
+			video.set(cv::CAP_PROP_POS_MSEC,timer.othTime);
+			timer.stopped=true;
 		}
 
 		int frames(){
@@ -171,32 +174,30 @@ namespace nc{
 		}
 
 		void start(){
-			frameTracker.start();
+			timer.start();
 		}
 
-		void end(bool add){
-			frameTracker.end();
-			if (add) allTime+=frameTracker.time();
+		void restart(){
+			timer.reset();
 		}
 
-		void sync(bool add){ //>0 is too fast, <0 is too slow
-			TimeTracker syncTracker;
-			syncTracker.start();
+		void stop(){
+			timer.stop();
+		}
 
-			sleepTime=ms()-allTime;
+		double time(){
+			return timer.time();
+		}
+
+		void sync(){ //>0 is too fast, <0 is too slow
+			double currTime=timer.time();
+			sleepTime=ms()-currTime;
 			sleepTime= sleepTime>0 ? sleepTime : 0;
 
 			int sleepTimeMs=sleepTime;
-			int sleepTimeMcrs=fmod(sleepTime,1)*1000;
+			int sleepTimeMcrs=(sleepTime-(int)sleepTime)*1000;
 
 			sleep(0,sleepTimeMs,sleepTimeMcrs,0);
-
-			syncTracker.end();
-			sleptTime=syncTracker.time();
-
-			if (add){
-				allTime+=sleptTime;
-			}
 		}
 	};
 }
