@@ -60,7 +60,7 @@ play /path/to/media.extension
 - Fast and written in c++
 - Accelerates and decelerates to make up for lag/overspeed.
 - [Optimises output](https://github.com/lomnom/nncurses/blob/0cc2179216cc2eae5bf13fdbabc8410484605aca/Screens.hpp#L115) to allow for smooth displaying on [*slow terminals*](https://iterm2.com/) and lower latencies over ssh
-- Makes use of 240 ansi colors to display images (excluded first 15 as color depends on terminal and is slow to calculate)
+- Makes use of 240 ansi colors to display images (excluded first 16 as color depends on terminal and is slow to calculate)
 - Uses ascii block elements to fit more detail into smaller spaces (2 pixels per character).
 ## Videos
 - [Wide putin](https://drive.google.com/file/d/13UgRL1MGbNcufDHdK--rPDHIWegg4iRj/view?usp=sharing)
