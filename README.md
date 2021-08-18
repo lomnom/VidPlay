@@ -9,7 +9,7 @@ brew install opencv
 g++ -std=c++2a $(pkg-config --cflags --libs opencv4) -O3 Play.cpp -o play 
 mv play /usr/local/bin/play
 cd ..
-rm -r VidPlay
+rm -rf VidPlay
 ```
 ### raspberry pi/debian
 ```bash
@@ -18,9 +18,9 @@ cd VidPlay
 git clone https://github.com/lomnom/nncurses
 sudo apt-get install libopencv-dev
 clang++ -std=c++2a -O3 $(pkg-config --cflags --libs opencv) -lpthread -pthread Play.cpp -o play || clang++ -std=c++2a -O3 $(pkg-config --cflags --libs opencv4) -lpthread -pthread Play.cpp -o play
-mv play /usr/local/bin/play
+sudo mv play /usr/local/bin/play
 cd ..
-rm -r VidPlay
+rm -rf VidPlay
 ```
 ## Uninstallation
 ### unix-based systems
