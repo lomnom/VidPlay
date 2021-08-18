@@ -41,8 +41,7 @@ play /path/to/video.extension
 - `E`: reduce brightnessTresh
 - `R`: increase brightnessTresh
 - `t`: toggle turning blackened colored pixles to greyscale
-- `a`: go back 5s
-- `s`: go front 5s
+- `g`: goto ms
 ### Debug stats:
 - `Frame`: current frame
 - `fps`: fps stated in video header
@@ -50,10 +49,11 @@ play /path/to/video.extension
 - `Rms`: ms that the viewer is actually displaying
 - `Render`: Time taken to proccess frame from rgb to xterm
 - `Project`: Time taken to display frame on terminal
-- `error`: difference between Cms and Rms on previous frame
+- `error`: error in previous frame's delay
 - `greynessTresh`: grayscaling 
 - `brightnessTresh`: treshold before pixels are greyscaled
 - `gsBlack`: if blackened colored pixles are turned to greyscale
+- `paused`: if video is paused
 ## Features
 - Fast and written in c++
 - Accelerates and decelerates to make up for lag/overspeed.
@@ -65,4 +65,6 @@ play /path/to/video.extension
 - [Yoasabi - Monster](https://drive.google.com/file/d/1iMFqQUvV7-KRJiZ2E4ukrAtQNSoo2q0g/view?usp=sharing)
 - [Tunal tunak tun](https://drive.google.com/file/d/1U-miDEqPg-n7MepF9BeI8_7sxqDgHSZE/view?usp=sharing)
 ## TODO
-- Update videos
+- Allow viewing of images
+- dITheRiNG???/?!!?!1?/
+- More accurate timer

@@ -133,13 +133,14 @@ namespace nc{
 	class VideoTimer{
 	public:
 		VideoCapture& video;
-		int fps;
+		double fps;
 
 		double frameTime;
 		double sleepTime;
+		double sleptTime;
 
 		TimeTracker frameTracker;
-		double allTime;
+		double allTime=0;
 
 		VideoTimer(VideoCapture& video):
 			video(video), 
@@ -161,8 +162,12 @@ namespace nc{
 		}
 
 		void frame(int id){ //AAAAAAAAA
-			allTime=((id/fps)*1000)+((id%fps)*frameTime);
+			allTime=((id/fps)*1000)+(fmod(id,fps)*frameTime);
 			video.set(cv::CAP_PROP_POS_MSEC,allTime);
+		}
+
+		int frames(){
+			return video.get(cv::CAP_PROP_FRAME_COUNT);
 		}
 
 		void start(){
@@ -175,16 +180,23 @@ namespace nc{
 		}
 
 		void sync(bool add){ //>0 is too fast, <0 is too slow
-			start();
+			TimeTracker syncTracker;
+			syncTracker.start();
+
 			sleepTime=ms()-allTime;
 			sleepTime= sleepTime>0 ? sleepTime : 0;
 
 			int sleepTimeMs=sleepTime;
-			int sleepTimeMcrs=(sleepTime-(int)sleepTime)*1000;
+			int sleepTimeMcrs=fmod(sleepTime,1)*1000;
 
 			sleep(0,sleepTimeMs,sleepTimeMcrs,0);
 
-			end(add);
+			syncTracker.end();
+			sleptTime=syncTracker.time();
+
+			if (add){
+				allTime+=sleptTime;
+			}
 		}
 	};
 }
