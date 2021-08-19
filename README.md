@@ -1,4 +1,4 @@
-# VidPlay, a terminal-based media viewer
+# VidPlay, a terminal-based ***media*** viewer
 ## Installation
 ### mac
 ```bash
@@ -16,7 +16,7 @@ rm -rf VidPlay
 git clone https://github.com/lomnom/VidPlay
 cd VidPlay
 git clone https://github.com/lomnom/nncurses
-sudo apt-get install libopencv-dev
+sudo apt-get install libopencv-dev 
 clang++ -std=c++2a -O3 $(pkg-config --cflags --libs opencv) -lpthread -pthread Play.cpp -o play || clang++ -std=c++2a -O3 $(pkg-config --cflags --libs opencv4) -lpthread -pthread Play.cpp -o play
 sudo mv play /usr/local/bin/play
 cd ..
@@ -65,10 +65,13 @@ play /path/to/media1.extension /path/to/media2.extension ...
 - [Optimises output](https://github.com/lomnom/nncurses/blob/0cc2179216cc2eae5bf13fdbabc8410484605aca/Screens.hpp#L115) to allow for smooth displaying on [*slow terminals*](https://iterm2.com/) and lower latencies over ssh
 - Makes use of 240 ansi colors to display images (excluded first 16 as color depends on terminal and is slow to calculate)
 - Uses ascii block elements to fit more detail into smaller spaces (2 pixels per character).
+- Accurate fps limiting
 ## Videos
+(cant asciinema as the escape codes makes it stroke. The block elements also look terrible there.)
 - [Wide putin](https://drive.google.com/file/d/13UgRL1MGbNcufDHdK--rPDHIWegg4iRj/view?usp=sharing)
 - [Yoasabi - Monster](https://drive.google.com/file/d/1iMFqQUvV7-KRJiZ2E4ukrAtQNSoo2q0g/view?usp=sharing)
 - [Tunal tunak tun](https://drive.google.com/file/d/1U-miDEqPg-n7MepF9BeI8_7sxqDgHSZE/view?usp=sharing)
 ## TODO
-- Update videos
+- Add audio (***SKREEEEEEE***)
+- Update videos (in progress)
 - dITheRiNG???/?!!?!1?/
