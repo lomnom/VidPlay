@@ -31,19 +31,23 @@ string statms(string name, T value) {return "\n"+name+": "+to_string(value)+"ms"
 template <class T>
 string nnlstat(string name, T value) {return name+": "+to_string(value);}
 
-void videoPlayer(string file,Terminal& terminal){ //this is a mess
+string videoPlayer(
+	size_t id,
+	bool& debug,
+	uint8_t& brightnessTresh,
+	uint8_t& greynessTresh,
+	bool& gsBlack,
+	string file,
+	Terminal& terminal
+){ //this is a mess
 	cv::VideoCapture video(file);
 	VideoTimer timer(video);
 
-	bool debug=false;
 	bool endKeyListener=false;
 	thread keyThread(keyListener,&endKeyListener);
 
 	TimeTracker projTracker,procTracker;
 
-	uint8_t brightnessTresh=45;
-	uint8_t greynessTresh=155;
-	bool gsBlack=true;
 	bool paused=false;
 
 	bool end=false;
@@ -82,7 +86,8 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 		////////render debug text
 		if (debug){
 			Text(
-				nnlstat("frame",timer.frame())								+
+				nnlstat("fineno",id)										+
+				stat("frame",timer.frame())									+
 				stat("fps",timer.fps)										+
 				statms("Cms",timer.ms())									+ //correct ms
 				statms("Rms",timer.timer.time())									+ //real ms
@@ -122,7 +127,15 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 			else if (currCh=='E') brightnessTresh+=5;
 			else if (currCh=='R') brightnessTresh-=5;
 			else if (currCh=='t') gsBlack= !(gsBlack);
-			else if (currCh=='p') {
+			else if (currCh=='m') {
+				endKeyListener=true;
+				keyThread.join();
+				return "NEXT";
+			}else if (currCh=='n'){
+				endKeyListener=true;
+				keyThread.join();
+				return "BACK"; //go front 1 signal
+			}else if (currCh=='p') {
 				if (paused){
 					paused=false;
 					timer.start();
@@ -133,7 +146,7 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 			}else if (currCh=='q'){
 				endKeyListener=true;
 				keyThread.join();
-				break;
+				return "QUIT"; //stop signal
 			}else if (currCh=='d'){
 				debug= !(debug);
 				terminal.screen.fill();
@@ -148,7 +161,11 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 					Text(ms,Style(-1,-1,0),nc::midOfst(terminal.screen.cols,(int)ms.size()),terminal.screen.rows/2+1).render(&terminal.screen);
 					terminal.project();
 				}
-				timer.ms(stoi(ms)); //this stops video
+				try{//this stops video
+					timer.ms(stoi(ms)); 
+				}catch (std::invalid_argument){
+					timer.ms(0);
+				}
 				Mat aFrame;
 				video >> aFrame;
 				if (!(aFrame.empty())){
@@ -157,6 +174,10 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 					end=true;
 				}
 				if (!(paused)) timer.start(); //start stopwatch again after being stopped and changed
+			}else if (currCh=='G'){
+				endKeyListener=true;
+				keyThread.join();
+				return "GOTO";
 			}
 			else cout << '\a';
 		}
@@ -165,12 +186,16 @@ void videoPlayer(string file,Terminal& terminal){ //this is a mess
 	}
 }
 
-void imagePlayer(string file,Terminal& terminal){
+string imagePlayer(
+	size_t id,
+	bool& debug,
+	uint8_t& brightnessTresh,
+	uint8_t& greynessTresh,
+	bool& gsBlack,
+	string file,
+	Terminal& terminal
+){
 	Mat theMat=imread(file);
-	uint8_t brightnessTresh=45;
-	uint8_t greynessTresh=155;
-	bool gsBlack=true;
-	bool debug=false;
 
 	while (true){
 		Image image(greynessTresh,brightnessTresh,gsBlack,theMat);
@@ -179,7 +204,8 @@ void imagePlayer(string file,Terminal& terminal){
 
 		if (debug){
 			Text(
-				nnlstat("greynessTresh",greynessTresh)+
+				nnlstat("fineno",id)+
+				stat("greynessTresh",greynessTresh)+
 				stat("brightnessTresh",brightnessTresh)+
 				"\ngsBlack: "+(gsBlack?"true":"false")						
 				,Style(-1,-1,0)
@@ -191,12 +217,15 @@ void imagePlayer(string file,Terminal& terminal){
 
 		char currCh=nc::cinchr();
 
-		if (currCh=='q') break;
+		if (currCh=='q') return "QUIT"; //quit signal
 		else if (currCh=='d') debug= !(debug);
 		else if (currCh=='e') greynessTresh+=5;
 		else if (currCh=='r') greynessTresh-=5;
 		else if (currCh=='E') brightnessTresh+=5;
 		else if (currCh=='R') brightnessTresh-=5;
+		else if (currCh=='m') return "NEXT"; //go back 1 signal
+		else if (currCh=='n') return "BACK"; //go front 1 signal
+		else if (currCh=='G') return "GOTO";
 		else if (currCh=='t') gsBlack= !(gsBlack);
 		else cout << '\a';
 	}

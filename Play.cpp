@@ -43,13 +43,53 @@ int main(int argc, char *argv[]){
 		return 0 ;
 	}
 
-	if (isVideo(arguments[1])){
-		nc::Terminal terminal(nc::Texture(" ",nc::Style(-1,-1,0)));
-		videoPlayer(arguments[1],terminal);
-	}else if (isImage(arguments[1])){
-		nc::Terminal terminal(nc::Texture(" ",nc::Style(-1,-1,0)));
-		imagePlayer(arguments[1],terminal);
-	}else{
-		cout << "File format not recognised!\n";
+	nc::Terminal* terminal=new nc::Terminal(nc::Texture(" ",nc::Style(-1,-1,0)));
+	size_t imgPtr=0;
+	string signal;
+
+	uint8_t brightnessTresh=45;
+	uint8_t greynessTresh=155;
+	bool gsBlack=true;
+	bool debug=false;
+
+	while (true){
+		if (isVideo(arguments[1+imgPtr])){
+			signal=videoPlayer(imgPtr,debug,brightnessTresh,greynessTresh,gsBlack,arguments[1+imgPtr],*terminal);
+		}else if (isImage(arguments[1+imgPtr])){
+			signal=imagePlayer(imgPtr,debug,brightnessTresh,greynessTresh,gsBlack,arguments[1+imgPtr],*terminal);
+		}else{
+			delete terminal;
+			cout << "File format not recognised!\n";
+			break;
+		}
+
+		terminal->screen.fill();
+		terminal->project();
+		cout << std::flush;
+
+		if (signal=="QUIT") {
+			delete terminal;
+			break;
+		}else if (signal=="NEXT"){
+			imgPtr=nc::toroid(imgPtr+1,arguments.size()-1);
+		}else if (signal=="BACK"){
+			imgPtr=nc::toroid(imgPtr-1,arguments.size()-1);
+		}else if (signal=="GOTO"){
+			Text("Enter the file to go to!",Style(-1,-1,0),terminal->screen.cols/2-13,terminal->screen.rows/2).render(&terminal->screen);
+			terminal->project();
+			string file="";
+			while (true){
+				char inCh=nc::cinchr();
+				if (isdigit(inCh)) file+=inCh;
+				else break;
+				Text(file,Style(-1,-1,0),nc::midOfst(terminal->screen.cols,(int)file.size()),terminal->screen.rows/2+1).render(&terminal->screen);
+				terminal->project();
+			}
+			try{//this stops video
+				imgPtr=nc::toroid(stoi(file),(int)arguments.size()-1);
+			}catch (std::invalid_argument){
+				imgPtr=0;
+			}
+		}
 	}
 }

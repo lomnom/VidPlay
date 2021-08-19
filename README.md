@@ -30,7 +30,7 @@ rm /usr/local/bin/play
 ## Usage
 Viewing media:
 ```bash
-play /path/to/media.extension
+play /path/to/media1.extension /path/to/media2.extension ...
 ```
 ### Controls:
 (^ is video only)
@@ -43,8 +43,11 @@ play /path/to/media.extension
 - `R`: increase brightnessTresh
 - `t`: toggle turning blackened colored pixles to greyscale
 - ^`g`: goto ms
+- `n`: go to previous file
+- `m`: go to next file
 ### Debug stats:
 (^ is video only)
+- `fileno`: current file by position in terminal args
 - ^`Frame`: current frame
 - ^`fps`: fps stated in video header
 - ^`Cms`: ms that the viewer should be displaying 
