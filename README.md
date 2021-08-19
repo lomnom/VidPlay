@@ -43,6 +43,7 @@ play /path/to/media1.extension /path/to/media2.extension ...
 - `R`: increase brightnessTresh
 - `t`: toggle turning blackened colored pixles to greyscale
 - ^`g`: goto ms
+- `G`: goto file
 - `n`: go to previous file
 - `m`: go to next file
 ### Debug stats:
@@ -52,11 +53,11 @@ play /path/to/media1.extension /path/to/media2.extension ...
 - ^`fps`: fps stated in video header
 - ^`Cms`: ms that the viewer should be displaying 
 - ^`Rms`: ms that the viewer is actually displaying
-- ^`Render`: Time taken to proccess frame from rgb to xterm
+- ^`preccess`: Time taken to proccess frame from rgb to xterm
 - ^`Project`: Time taken to display frame on terminal
 - ^`error`: error in previous frame's delay
-- `greynessTresh`: grayscaling 
-- `brightnessTresh`: treshold before pixels are greyscaled
+- `greynessTresh`: greyness treshold before pixels are greyscaled
+- `brightnessTresh`: brightness treshold before pixels are greyscaled
 - `gsBlack`: if blackened colored pixles are turned to greyscale
 - ^`paused`: if video is paused
 ## Features
