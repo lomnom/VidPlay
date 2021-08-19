@@ -137,6 +137,7 @@ string videoPlayer(
 				return "BACK"; //go front 1 signal
 			}else if (currCh=='p') {
 				if (paused){
+					terminal.screen.fill();
 					paused=false;
 					timer.start();
 				}else{
