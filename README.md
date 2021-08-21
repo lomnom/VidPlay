@@ -55,6 +55,7 @@ play /path/to/media1.extension /path/to/media2.extension ...
 - ^`Rms`: ms that the viewer is actually displaying
 - ^`preccess`: Time taken to proccess frame from rgb to xterm
 - ^`Project`: Time taken to display frame on terminal
+- ^`sleptTime`: the delay for the previous frame
 - ^`error`: error in previous frame's delay
 - `greynessTresh`: greyness treshold before pixels are greyscaled
 - `brightnessTresh`: brightness treshold before pixels are greyscaled

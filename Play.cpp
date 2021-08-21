@@ -1,5 +1,6 @@
 #include "Player.hpp"
 #include <thread>
+#include <fstream>
 
 using std::string;
 
@@ -53,6 +54,12 @@ int main(int argc, char *argv[]){
 	bool debug=false;
 
 	while (true){
+		std::ifstream file(arguments[1+imgPtr]);
+		if(!file.is_open()){
+			delete terminal;
+		    cout << "File not found!\n";
+		    return -1;
+		}
 		if (isVideo(arguments[1+imgPtr])){
 			signal=videoPlayer(imgPtr,debug,brightnessTresh,greynessTresh,gsBlack,arguments[1+imgPtr],*terminal);
 		}else if (isImage(arguments[1+imgPtr])){
@@ -60,6 +67,7 @@ int main(int argc, char *argv[]){
 		}else{
 			delete terminal;
 			cout << "File format not recognised!\n";
+			return -1;
 			break;
 		}
 

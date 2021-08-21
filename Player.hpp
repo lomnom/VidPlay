@@ -95,7 +95,6 @@ string videoPlayer(
 				statms("project",projTime)									+ //time for project
 				statms("error",timer.time()-timer.ms()+timer.frameTime)		+ //error in correct and real
 				statms("sleepTime",timer.sleepTime)							+ //time to delay for previous frame
-				statms("sleptTime",timer.sleptTime)							+ //time actually delayed
 				statms("frameTime",timer.frameTime)							+ //time actually delayed
 				stat("greynessTresh",greynessTresh)							+
 				stat("brightnessTresh",brightnessTresh)						+

@@ -137,7 +137,6 @@ namespace nc{
 
 		double frameTime;
 		double sleepTime;
-		double sleptTime;
 
 		bool stopped;
 
