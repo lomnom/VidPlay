@@ -75,9 +75,9 @@ int main(int argc, char *argv[]){
 			delete terminal;
 			break;
 		}else if (signal=="NEXT"){
-			imgPtr=toroid(imgPtr+1,arguments.size()-1);
+			imgPtr=toroid(imgPtr+1,long(arguments.size()-1));
 		}else if (signal=="BACK"){
-			imgPtr=toroid(imgPtr-1,arguments.size()-1);
+			imgPtr=toroid(imgPtr-1,long(arguments.size()-1));
 		}else if (signal=="GOTO"){
 			Text("Enter the file to go to!",Style(-1,-1,0),terminal->screen.cols/2-13,terminal->screen.rows/2).render(&terminal->screen);
 			terminal->project();
