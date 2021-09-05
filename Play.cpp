@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
 	}
 
 	nc::Terminal* terminal=new nc::Terminal(nc::Texture(" ",nc::Style(-1,-1,0)));
-	size_t imgPtr=0;
+	long imgPtr=0;
 	string signal;
 
 	uint8_t brightnessTresh=45;
