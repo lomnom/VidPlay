@@ -2,7 +2,7 @@
 #include <thread>
 #include <fstream>
 
-using std::string,toroid;
+using std::string,nc::toroid;
 
 bool hasEnding(string const &fullString, string const &ending) {
 	if (fullString.length() >= ending.length()) {
