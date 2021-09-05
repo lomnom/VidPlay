@@ -2,7 +2,7 @@
 #include <thread>
 #include <fstream>
 
-using std::string,nc::toroid;
+using std::string,nc::toroid,std::flush;
 
 bool hasEnding(string const &fullString, string const &ending) {
 	if (fullString.length() >= ending.length()) {
@@ -81,6 +81,7 @@ int main(int argc, char *argv[]){
 		}else if (signal=="GOTO"){
 			Text("Enter the file to go to!",Style(-1,-1,0),terminal->screen.cols/2-13,terminal->screen.rows/2).render(&terminal->screen);
 			terminal->project();
+			cout << flush;
 			string file="";
 			while (true){
 				char inCh=nc::cinchr();
@@ -88,6 +89,7 @@ int main(int argc, char *argv[]){
 				else break;
 				Text(file,Style(-1,-1,0),nc::midOfst(terminal->screen.cols,(int)file.size()),terminal->screen.rows/2+1).render(&terminal->screen);
 				terminal->project();
+				cout << flush;
 			}
 			try{
 				imgPtr=toroid(stoi(file),(int)arguments.size()-1);

@@ -4,6 +4,7 @@
 using nc::Text,nc::Texture,nc::HollowRectangle,nc::Style,std::cout,cv::imread;
 using cv::VideoCapture,nc::VideoTimer,std::thread,nc::Terminal,std::stoi;
 using nc::TimeTracker,std::string,std::to_string,std::vector,nc::Image;
+using std::flush;
 
 vector<char> keys;
 void keyListener(bool* end){
@@ -113,7 +114,7 @@ string videoPlayer(
 			Text("Paused. Press P to unpause",Style(-1,-1,0),terminal.screen.cols/2-13,0).render(&terminal.screen);
 
 		terminal.project();
-		cout << std::flush;
+		cout << flush;
 
 		if (debug) terminal.screen.fill();
 
@@ -162,7 +163,7 @@ string videoPlayer(
 					else break;
 					Text(ms,Style(-1,-1,0),nc::midOfst(terminal.screen.cols,(int)ms.size()),terminal.screen.rows/2+1).render(&terminal.screen);
 					terminal.project();
-					cout << std::flush;
+					cout << flush;
 				}
 				try{//this stops video
 					timer.ms(stoi(ms)); 
@@ -217,7 +218,7 @@ string imagePlayer(
 		}
 
 		terminal.project();
-		cout << std::flush;
+		cout << flush;
 		terminal.screen.fill();
 
 		char currCh=nc::cinchr();
