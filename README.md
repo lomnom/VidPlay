@@ -49,7 +49,7 @@ play /path/to/media1.extension /path/to/media2.extension ...
 ### Debug stats:
 (^ is video only)
 - `fileno`: current file by position in terminal args
-- ^`Frame`: current frame
+- ^`Frame`: current frame <!--megdonal-->
 - ^`fps`: fps stated in video header
 - ^`Cms`: ms that the viewer should be displaying 
 - ^`Rms`: ms that the viewer is actually displaying

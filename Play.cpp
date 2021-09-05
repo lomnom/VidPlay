@@ -2,7 +2,7 @@
 #include <thread>
 #include <fstream>
 
-using std::string;
+using std::string,toroid;
 
 bool hasEnding(string const &fullString, string const &ending) {
 	if (fullString.length() >= ending.length()) {
@@ -71,17 +71,13 @@ int main(int argc, char *argv[]){
 			break;
 		}
 
-		terminal->screen.fill();
-		terminal->project();
-		cout << std::flush;
-
 		if (signal=="QUIT") {
 			delete terminal;
 			break;
 		}else if (signal=="NEXT"){
-			imgPtr=nc::toroid(imgPtr+1,arguments.size()-1);
+			imgPtr=toroid(imgPtr+1,arguments.size()-1);
 		}else if (signal=="BACK"){
-			imgPtr=nc::toroid(imgPtr-1,arguments.size()-1);
+			imgPtr=toroid(imgPtr-1,arguments.size()-1);
 		}else if (signal=="GOTO"){
 			Text("Enter the file to go to!",Style(-1,-1,0),terminal->screen.cols/2-13,terminal->screen.rows/2).render(&terminal->screen);
 			terminal->project();
@@ -93,8 +89,8 @@ int main(int argc, char *argv[]){
 				Text(file,Style(-1,-1,0),nc::midOfst(terminal->screen.cols,(int)file.size()),terminal->screen.rows/2+1).render(&terminal->screen);
 				terminal->project();
 			}
-			try{//this stops video
-				imgPtr=nc::toroid(stoi(file),(int)arguments.size()-1);
+			try{
+				imgPtr=toroid(stoi(file),(int)arguments.size()-1);
 			}catch (std::invalid_argument){
 				imgPtr=0;
 			}

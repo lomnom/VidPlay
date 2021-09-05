@@ -40,6 +40,7 @@ string videoPlayer(
 	string file,
 	Terminal& terminal
 ){ //this is a mess
+	assert(file!="");
 	cv::VideoCapture video(file);
 	VideoTimer timer(video);
 
@@ -90,7 +91,7 @@ string videoPlayer(
 				stat("frame",timer.frame())									+
 				stat("fps",timer.fps)										+
 				statms("Cms",timer.ms())									+ //correct ms
-				statms("Rms",timer.timer.time())									+ //real ms
+				statms("Rms",timer.timer.time())							+ //real ms
 				statms("proccess",procTracker.time())						+ //time taken for render
 				statms("project",projTime)									+ //time for project
 				statms("error",timer.time()-timer.ms()+timer.frameTime)		+ //error in correct and real
@@ -112,6 +113,7 @@ string videoPlayer(
 			Text("Paused. Press P to unpause",Style(-1,-1,0),terminal.screen.cols/2-13,0).render(&terminal.screen);
 
 		terminal.project();
+		cout << std::flush;
 
 		if (debug) terminal.screen.fill();
 
@@ -160,6 +162,7 @@ string videoPlayer(
 					else break;
 					Text(ms,Style(-1,-1,0),nc::midOfst(terminal.screen.cols,(int)ms.size()),terminal.screen.rows/2+1).render(&terminal.screen);
 					terminal.project();
+					cout << std::flush;
 				}
 				try{//this stops video
 					timer.ms(stoi(ms)); 
@@ -195,6 +198,7 @@ string imagePlayer(
 	string file,
 	Terminal& terminal
 ){
+	assert(file!="");
 	Mat theMat=imread(file);
 
 	while (true){
@@ -213,6 +217,7 @@ string imagePlayer(
 		}
 
 		terminal.project();
+		cout << std::flush;
 		terminal.screen.fill();
 
 		char currCh=nc::cinchr();
