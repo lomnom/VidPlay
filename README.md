@@ -22,6 +22,18 @@ sudo mv play /usr/local/bin/play
 cd ..
 rm -rf VidPlay
 ```
+
+### arch linux
+```bash
+git clone https://github.com/lomnom/VidPlay
+cd VidPlay
+git clone https://github.com/lomnom/nncurses
+sudo pacman -S opencv vtk hdf5 glew fmt
+g++ -std=c++2a $(pkg-config --cflags --libs opencv4) -O3 Play.cpp -o play 
+mv play /usr/local/bin/play
+cd ..
+rm -rf VidPlay
+```
 ## Uninstallation
 ### unix-based systems
 ```bash
